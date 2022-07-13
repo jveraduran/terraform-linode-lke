@@ -2,6 +2,12 @@
 
 Kubernetes Cluster using Linode LKE and Terraform Cloud
 
+## Setup
+
+* [GitHub](https://github.com) repository
+* [Linode Account](https://www.linode.com)
+* [Terraform Cloud](https://cloud.hashicorp.com/products/terraform)
+
 ## Architecture
 
 * Kubernetes v1.23
