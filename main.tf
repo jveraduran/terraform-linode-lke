@@ -40,11 +40,3 @@ resource "linode_nodebalancer_node" "awesome_cluster_lb_node" {
   label           = var.label
   weight          = 50
 }
-
-
-
-//Export this cluster's attributes
-output "kubeconfig" {
-  value     = linode_lke_cluster.awesome_cluster.kubeconfig
-  sensitive = true
-}

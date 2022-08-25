@@ -13,3 +13,8 @@ output "id" {
 output "pool" {
   value = linode_lke_cluster.awesome_cluster.pool
 }
+
+output "kubeconfig" {
+  value     = linode_lke_cluster.awesome_cluster.kubeconfig
+  sensitive = true
+}
