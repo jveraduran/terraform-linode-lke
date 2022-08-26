@@ -10,6 +10,6 @@ module "lke" {
 }
 module "bastion" {
   source   = "./modules/bastion"
-  image_id = var.image_id
+  image_id = data.linode_images.bastion.id
   region   = var.region
 }

@@ -9,8 +9,8 @@ locals {
   image_label       = "private-image"
   instance_label    = "temporary-linode"
   instance_type     = "g6-standard-1"
-  region = "us-east"
-  ssh_username = "root"
+  region            = "us-east"
+  ssh_username      = "root"
 }
 
 source "linode" "bastion" {

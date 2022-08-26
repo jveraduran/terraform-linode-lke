@@ -1,6 +1,6 @@
 resource "linode_instance" "bastion" {
   label  = "bastion"
-  image  = data.linode_image.bastion.id
+  image  = var.image_id
   region = var.region
   type   = "g6-standard-1"
 
