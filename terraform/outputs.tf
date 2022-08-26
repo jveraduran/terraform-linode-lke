@@ -1,20 +1,20 @@
 output "api_endpoints" {
-  value = linode_lke_cluster.awesome_cluster.api_endpoints
+  value = module.lke.api_endpoints
 }
 
 output "status" {
-  value = linode_lke_cluster.awesome_cluster.status
+  value = module.lke.status
 }
 
 output "id" {
-  value = linode_lke_cluster.awesome_cluster.id
+  value = module.lke.id
 }
 
 output "pool" {
-  value = linode_lke_cluster.awesome_cluster.pool
+  value = module.lke.pool
 }
 
 output "kubeconfig" {
-  value     = linode_lke_cluster.awesome_cluster.kubeconfig
+  value     = module.lke.kubeconfig
   sensitive = true
 }
