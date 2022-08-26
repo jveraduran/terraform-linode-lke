@@ -20,7 +20,7 @@ source "linode" "bastion" {
   instance_label    = local.instance_label
   instance_type     = local.instance_type
   linode_token      = var.linode_token
-  region            = loca.region
+  region            = local.region
   ssh_username      = local.ssh_username
 }
 
