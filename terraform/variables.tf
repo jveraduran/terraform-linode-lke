@@ -1,17 +1,10 @@
 variable "token" {
   description = "Your Linode API Access Token (required)"
 }
-
-variable "image_id" {
-  description = "Private Image ID generated from Packer (required)"
-  default     = "private/17136856"
-}
-
 variable "nodes_count" {
   description = "Worker nodes count(required)"
   default     = "3"
 }
-
 variable "k8s_version" {
   description = "The Kubernetes version to use for this cluster. (required)"
   default     = "1.23"
