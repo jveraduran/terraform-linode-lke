@@ -40,3 +40,9 @@ resource "linode_nodebalancer_node" "awesome_cluster_lb_node" {
   label           = var.label
   weight          = 50
 }
+
+module "bastion" {
+  source   = "./modules/bastion"
+  image_id = var.image_id
+  region   = var.region
+}

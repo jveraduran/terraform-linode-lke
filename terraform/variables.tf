@@ -2,6 +2,11 @@ variable "token" {
   description = "Your Linode API Access Token (required)"
 }
 
+variable "image_id" {
+  description = "Private Image ID generated from Packer (required)"
+  default     = "private/17134453"
+}
+
 variable "nodes_count" {
   description = "Worker nodes count(required)"
   default     = "3"
