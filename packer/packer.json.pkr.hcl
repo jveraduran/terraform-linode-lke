@@ -5,9 +5,9 @@ variable "linode_token" {
 
 locals {
   image             = "linode/ubuntu18.04"
-  image_description = "My Private Image"
-  image_label       = "private-image"
-  instance_label    = "temporary-linode"
+  image_description = "Bastion Private Image"
+  image_label       = "bastion"
+  instance_label    = "bastion"
   instance_type     = "g6-standard-1"
   region            = "us-east"
   ssh_username      = "root"
