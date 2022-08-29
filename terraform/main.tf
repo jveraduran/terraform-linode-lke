@@ -1,12 +1,12 @@
 module "lke" {
-  source        = "./modules/lke"
-  region        = var.region
-  nodes_count   = var.nodes_count
-  k8s_version   = var.k8s_version
-  label         = var.label
-  tags          = var.tags
-  conn_throttle = var.conn_throttle
-  pools         = var.pools
+  source               = "./modules/lke"
+  region               = var.region
+  nodes_count          = var.nodes_count
+  k8s_version          = var.k8s_version
+  label                = var.label
+  tags                 = var.tags
+  client_conn_throttle = var.client_conn_throttle
+  pool                 = var.pool
 }
 module "bastion" {
   source     = "./modules/bastion"
