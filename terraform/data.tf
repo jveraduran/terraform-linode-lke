@@ -1,6 +1,6 @@
 data "linode_images" "bastion" {
   filter {
-    name = "label"
-    values = ["private-image"]
+    name   = "label"
+    values = ["bastion"]
   }
 }

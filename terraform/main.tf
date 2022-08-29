@@ -9,7 +9,12 @@ module "lke" {
   pools         = var.pools
 }
 module "bastion" {
-  source   = "./modules/bastion"
-  image_id = data.linode_images.bastion.id
-  region   = var.region
+  source     = "./modules/bastion"
+  image_id   = "private/17160586"
+  region     = var.region
+  type       = "g6-standard-1"
+  label      = "temporary-linode"
+  swap_size  = 256
+  tags       = var.tags
+  private_ip = true
 }
