@@ -1,4 +1,4 @@
-name: "Terraform"
+name: "Terraform Linode"
 
 on:
   push:
@@ -39,6 +39,15 @@ jobs:
       - name: 🎬 Terraform Init
         id: init
         run: terraform -chdir=terraform init
+      
+      - name: Terraform - Setup Custom variables
+        id: vars
+        run: |
+          cat >> terraform.tfvars<<EOF
+          token         = "$LINODE_TOKEN"
+          EOF
+        env:
+          LINODE_TOKEN: ${{ secrets.LINODE_TOKEN }}
 
       - name: 🏗️ Terraform Plan
         id: plan
