@@ -3,6 +3,9 @@
 #################################################################
 
 .DS_Store
+cluster.yaml
+id_rsa
+id_rsa.pub
 
 # Local .terraform directories
 **/.terraform/*
