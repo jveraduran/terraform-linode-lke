@@ -41,17 +41,10 @@ jobs:
         run: terraform -chdir=terraform init
       
       - name: Terraform - Setup Custom variables
-        id: vars
-        run: |
-          cat >> terraform.tfvars<<EOF
-          token         = "$LINODE_TOKEN"
-          EOF
-        env:
-          LINODE_TOKEN: ${{ secrets.LINODE_TOKEN }}
 
       - name: 🏗️ Terraform Plan
         id: plan
-        run: terraform -chdir=terraform plan -no-color
+        run: terraform -chdir=terraform plan -var "token=$LINODE_TOKEN" -no-color
         env:
           LINODE_TOKEN: ${{ secrets.LINODE_TOKEN }}
         continue-on-error: true
@@ -85,7 +78,7 @@ jobs:
 
       - name: 🚀 Terraform Apply
         if: github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
-        run: terraform -chdir=terraform apply
+        run: terraform -chdir=terraform apply -var "token=$LINODE_TOKEN"
         env:
           LINODE_TOKEN: ${{ secrets.LINODE_TOKEN }}
           
