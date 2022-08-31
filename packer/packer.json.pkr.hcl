@@ -3,6 +3,11 @@ variable "linode_token" {
   default = env("LINODE_TOKEN")
 }
 
+variable "version" {
+  type    = string
+  default = env("VERSION")
+}
+
 locals {
   image             = "linode/ubuntu18.04"
   image_description = "Bastion Private Image"
