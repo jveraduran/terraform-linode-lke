@@ -1,4 +1,4 @@
-name: Packer Consul AWS
+name: Packer Consul Linode
 
 on:
   push:
