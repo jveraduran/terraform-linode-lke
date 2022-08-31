@@ -11,7 +11,7 @@ module "lke" {
 module "bastion" {
   source          = "./modules/bastion"
   image_id        = data.linode_images.bastion.images[0].id
-  authorized_keys = ["ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQC10SXNDdjglIB8hLveI12aZty0Fo5ZkVphuw9HAi4jYX7vUnGQGRGbBaOQQrv926ZP8tY91/3SPxW1p0qY6GToPkk/CW0oyOjgvztHb3rAxAWofSDMYuesEaqbOWVqSep3HTV1WqRrw+Qta7TfQCoG+OemZHljHW+z7zPnqyUQifFKvfgkc7RB3ywAlcixYAXqlfm4zRlDlhHrkQabxWiGTQsc7wM5K8qN912CheC0KU2TyVSGkq0ClkSMyIC6IDCJxSuqcoKZ2fKxcyEvwsGZmiJHQbt/3I9Ix6KlsuP8k3lg4Ic8ixgzEx8mXiKmc9EjzhSF+/kaOp7yPmRekfRanJ0yS5YgKqxGF6XDTpCNJZoyk0cNrWHiS/97Oj/61pYPnQH/fgJ4ZU4LYBK8UiqL2tRUw7JRlOZnwtYJttw8j1OiJhStLMwjvZhBflD+KMA9D0r+5Advm8/HK3IiK863Ss0dUMCBOH14zuEIF7fzAhs3UZk9olikmq7uq7UCm20="]
+  authorized_keys = ["ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDCDq8DLYtJRElRE12PEz2hOe4jRo+e9tarnuBeTMdSt3WICOB7HAZLFgJzvxAyNBI2JgbLdgstEt6Ocuz9LGeyvFQX6WgmI7xPE4ixeYa+s2sgWM7ahAtrdlW75HzE2Z0U6SJDT5PCTXP7yViGbHOEBaNUkaHO52l0RCdkB6UP5vJqLkrUGg4cbvjlQRKFg6inKEXVH8546jA8OG/OGXdsPcUPN5JEdoKorNTRoED8c4mNRhMVjb4dDLT+x7PjvVyuhF9LWwjHpcj5sELFT9wyRkcURtcGjtFlbYdCjc0DPkohOilVtUzZEo/+vuFL8NTSpUgkYq7oDqKHRjdCDqeMk1bHUZSI5R6e5lLrpj30QNVDVpyIpv3hgsZMvuwjE+dky0yyXw3xsal0zE0Rk/A34CuZCVnQHahkDWg7Ap9WP1UYngelixHED13g5K42zpGSfO+3oot7qQPMx2slx7bC7Pym4+GM+XfPIfRvznwJlsmUY1vDYb6a2dkv8jo7121XyU7hIy7dfKr/4DBXiAw9xHARSNviPvphoxn7q+j69ZLMo2sinOzDZqRpi+kSdP7nMi4NuYutRTPJ7/Z2ffEOYmYRNEaFcVviv3n70b1BuLoeOOy0l68OuN2DYai2AjbgLC5RzeW321+EJmhxb9m8PT4zrFKdvZrdZFpAQiDHCQ=="]
   region          = var.region
   type            = "g6-standard-1"
   label           = "bastion"
