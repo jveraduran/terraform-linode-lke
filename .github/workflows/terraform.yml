@@ -76,7 +76,7 @@ jobs:
 
       - name: 🚀 Terraform Apply
         if: github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
-        run: terraform -chdir=terraform apply -var "token=$LINODE_TOKEN" -auto-aprove
+        run: terraform -chdir=terraform apply -var "token=$LINODE_TOKEN" -auto-approve
         env:
           LINODE_TOKEN: ${{ secrets.LINODE_TOKEN }}
           
