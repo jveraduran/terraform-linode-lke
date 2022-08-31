@@ -39,7 +39,7 @@ jobs:
 
   Build:
     needs: [Validate-Packer,Format-Packer]
-    if: ${{ (github.event_name == 'push') && always() }}
+    if: ${{ (github.event_name == 'release') && always() }}
     runs-on: ubuntu-latest
     name: Build
     steps:
