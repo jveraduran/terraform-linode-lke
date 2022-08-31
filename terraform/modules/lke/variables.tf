@@ -1,7 +1,3 @@
-variable "nodes_count" {
-  description = "Worker nodes count(required)"
-}
-
 variable "k8s_version" {
   description = "The Kubernetes version to use for this cluster. (required)"
   type        = string
@@ -128,5 +124,23 @@ variable "ssl_cert" {
 variable "ssl_key" {
   description = ""
   type        = string
+  default     = null
+}
+
+variable "mode" {
+  description = ""
+  type        = string
+  default     = null
+}
+
+variable "weight" {
+  description = ""
+  type        = number
+  default     = null
+}
+
+variable "nodes_count" {
+  description = "Worker nodes count(required)"
+  type        = number
   default     = null
 }
