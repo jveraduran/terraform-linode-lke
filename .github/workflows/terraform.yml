@@ -39,8 +39,6 @@ jobs:
       - name: 🎬 Terraform Init
         id: init
         run: terraform -chdir=terraform init
-      
-      - name: Terraform - Setup Custom variables
 
       - name: 🏗️ Terraform Plan
         id: plan
