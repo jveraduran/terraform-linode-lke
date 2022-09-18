@@ -12,7 +12,7 @@ variable "k8s_version" {
 
 variable "label" {
   description = "The unique label to assign to this cluster. (required)"
-  default     = "awesome_cluster"
+  default     = "linode_cluster"
 }
 
 variable "region" {
@@ -23,7 +23,7 @@ variable "region" {
 variable "tags" {
   description = "Tags to apply to your cluster for organizational purposes. (optional)"
   type        = list(string)
-  default     = ["awesome_cluster", "labs", "k8s"]
+  default     = ["linode_cluster", "labs", "k8s"]
 }
 variable "client_conn_throttle" {
   description = "Throttle connections per second (0-20). Set to 0 (default) to disable throttling (optional)"

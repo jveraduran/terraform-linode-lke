@@ -1,13 +1,22 @@
 module "lke" {
   source               = "./modules/lke"
   region               = var.region
-  nodes_count          = 3
+  nodes_count          = 1
   k8s_version          = var.k8s_version
   label                = var.label
   tags                 = var.tags
   client_conn_throttle = var.client_conn_throttle
   pool                 = var.pool
 }
+
+resource "local_file" "kubeconfig" {
+  depends_on = [
+    module.lke
+  ]
+  content  = base64decode(module.lke.kubeconfig)
+  filename = "cluster.yaml"
+}
+
 module "bastion" {
   source          = "./modules/bastion"
   image_id        = data.linode_images.bastion.images[0].id
@@ -21,7 +30,36 @@ module "bastion" {
   booted          = true
 }
 
-resource "local_file" "kubeconfig" {
-  content  = base64decode(module.lke.kubeconfig)
-  filename = "cluster.yaml"
+resource "null_resource" "bastion" {
+  depends_on = [
+    module.lke, local_file.kubeconfig, module.bastion
+  ]
+  provisioner "remote-exec" {
+    inline = ["mkdir .kube"]
+    connection {
+      host        = module.bastion.ip_address
+      type        = "ssh"
+      user        = "root"
+      private_key = file("./id_rsa")
+    }
+  }
+  provisioner "file" {
+    source      = "./cluster.yaml"
+    destination = ".kube/config"
+
+    connection {
+      host        = module.bastion.ip_address
+      type        = "ssh"
+      user        = "root"
+      private_key = file("./id_rsa")
+    }
+  }
+}
+
+module "kubernetes_addons" {
+  depends_on = [
+    module.lke, module.bastion, null_resource.bastion
+  ]
+  source              = "./modules/kubernetes-addons"
+  enable_external_dns = true
 }
