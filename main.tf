@@ -55,11 +55,10 @@ resource "null_resource" "bastion" {
     }
   }
 }
-
-module "kubernetes_addons" {
-  depends_on = [
-    module.lke, module.bastion, null_resource.bastion
-  ]
-  source              = "./modules/kubernetes-addons"
-  enable_external_dns = true
-}
+# module "kubernetes_addons" {
+#   depends_on = [
+#     module.lke, module.bastion
+#   ]
+#   source              = "./modules/kubernetes-addons"
+#   enable_external_dns = true
+# }

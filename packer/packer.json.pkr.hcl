@@ -41,7 +41,9 @@ build {
     inline = [
       "mkdir ~/ssh-conf",
       "sudo apt-get update -y",
-      "sudo apt-get install -y zsh unzip jq",
+      "sudo apt-get install -y zsh unzip jq python3 python3-pip",
+      "sudo pip3 install linode-cli --upgrade",
+      "sudo pip3 install boto",
       "wget https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh",
       "chmod +x ./install.sh",
       "sudo ./install.sh",

@@ -22,7 +22,6 @@ provider "kubernetes" {
   host                   = module.lke.api_endpoints[0]
   token                  = try(yamldecode(file("./cluster.yaml")).users[0].user.token, null)
   cluster_ca_certificate = try(base64decode(yamldecode(file("./cluster.yaml")).clusters[0].cluster.certificate-authority-data), null)
-
 }
 
 provider "helm" {
