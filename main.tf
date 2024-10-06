@@ -1,7 +1,7 @@
 module "lke" {
   source               = "./modules/lke"
   region               = var.region
-  nodes_count          = 1
+  nodes_count          = var.nodes_count
   k8s_version          = var.k8s_version
   label                = var.label
   tags                 = var.tags
@@ -19,8 +19,8 @@ resource "local_file" "kubeconfig" {
 
 module "bastion" {
   source          = "./modules/bastion"
-  image_id        = data.linode_images.bastion.images[0].id
-  authorized_keys = ["ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDCDq8DLYtJRElRE12PEz2hOe4jRo+e9tarnuBeTMdSt3WICOB7HAZLFgJzvxAyNBI2JgbLdgstEt6Ocuz9LGeyvFQX6WgmI7xPE4ixeYa+s2sgWM7ahAtrdlW75HzE2Z0U6SJDT5PCTXP7yViGbHOEBaNUkaHO52l0RCdkB6UP5vJqLkrUGg4cbvjlQRKFg6inKEXVH8546jA8OG/OGXdsPcUPN5JEdoKorNTRoED8c4mNRhMVjb4dDLT+x7PjvVyuhF9LWwjHpcj5sELFT9wyRkcURtcGjtFlbYdCjc0DPkohOilVtUzZEo/+vuFL8NTSpUgkYq7oDqKHRjdCDqeMk1bHUZSI5R6e5lLrpj30QNVDVpyIpv3hgsZMvuwjE+dky0yyXw3xsal0zE0Rk/A34CuZCVnQHahkDWg7Ap9WP1UYngelixHED13g5K42zpGSfO+3oot7qQPMx2slx7bC7Pym4+GM+XfPIfRvznwJlsmUY1vDYb6a2dkv8jo7121XyU7hIy7dfKr/4DBXiAw9xHARSNviPvphoxn7q+j69ZLMo2sinOzDZqRpi+kSdP7nMi4NuYutRTPJ7/Z2ffEOYmYRNEaFcVviv3n70b1BuLoeOOy0l68OuN2DYai2AjbgLC5RzeW321+EJmhxb9m8PT4zrFKdvZrdZFpAQiDHCQ=="]
+  image_id        = length(data.linode_images.bastion.images) > 0 ? data.linode_images.bastion.images[0].id : null
+  authorized_keys = ["ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC14w4MzeV/v1qrKLtxD7XeLIIGzrPdYj1poYxtgyjiqco5u4Lh9oiYuz2m7qGQW+ZqBdZIvmP+msGorD8fM+tWQSZuk4PxLGEDoRJ1+cEVLjanNPDEm68vgK18lyKr1lPkyM64R3TssoCy26NbOrU/pdM9txVx9o0pynypx2lFsUYrnE+LEM8kmpJjdFZvh0onHC17io5y/aZcw6q+e0xcs2J390sjtUcBJ0GB6lUmlEwB6Y2pRPMPJdDTF1gxSmZFEVl1EIlAQTHtYQmKc8D55AU8Gbe4AoWIIeh5Ei8HQfj+HxkOVX5jxcHtTpan/O61vg66FFJShZiQrZ+CbcGx"]
   region          = var.region
   type            = "g6-standard-1"
   label           = "bastion"
@@ -55,10 +55,124 @@ resource "null_resource" "bastion" {
     }
   }
 }
-# module "kubernetes_addons" {
-#   depends_on = [
-#     module.lke, module.bastion
-#   ]
-#   source              = "./modules/kubernetes-addons"
-#   enable_external_dns = true
-# }
+
+# https://developer.harness.io/docs/platform/get-started/tutorials/install-delegate/
+module "delegate" {
+  depends_on = [
+    module.lke, local_file.kubeconfig
+  ]
+  source  = "harness/harness-delegate/kubernetes"
+  version = "0.1.8"
+
+  account_id       = var.harness_account_id
+  delegate_token   = var.harness_delegate_token
+  delegate_name    = "harness-ce-candidate"
+  deploy_mode      = "KUBERNETES"
+  namespace        = "harness-delegate-ng"
+  manager_endpoint = var.harness_manager_endpoint
+  delegate_image   = "harness/delegate:24.09.83900" # https://hub.docker.com/r/harness/delegate
+  replicas         = 1
+  upgrader_enabled = true
+}
+
+# https://registry.terraform.io/providers/harness/harness/latest/docs/resources/platform_project
+resource "harness_platform_project" "harness_se_lab" {
+  depends_on = [
+    module.delegate
+  ]
+  identifier = "harnessselab"
+  name       = "Harness SE Lab"
+  org_id     = "default"
+  color      = "#FFC0CB"
+}
+
+# https://registry.terraform.io/providers/harness/harness/latest/docs/resources/platform_pipeline
+/* resource "harness_platform_pipeline" "harness_se_lab" {
+  identifier = "name"
+  org_id     = "default"
+  project_id = "harnessselab"
+  name       = "name"
+} */
+
+resource "harness_platform_template" "pipeline_template_remote" {
+  identifier    = "harnesssebuildtemplate"
+  org_id        = harness_platform_project.harness_se_lab.org_id
+  project_id    = harness_platform_project.harness_se_lab.id
+  name          = "harness-se-build-template"
+  version       = "1.0"
+  is_stable     = true
+  template_yaml = <<-EOT
+template:
+  name: harness-se-build-template
+  type: Stage
+  projectIdentifier: harnessselab
+  orgIdentifier: default
+  spec:
+    type: CI
+    spec:
+      cloneCodebase: true
+      infrastructure:
+        type: KubernetesDirect
+        spec:
+          connectorRef: harnessselabs
+          namespace: <+input>
+          automountServiceAccountToken: true
+          nodeSelector: {}
+          os: Linux
+      execution:
+        steps:
+          - step:
+              type: BuildAndPushDockerRegistry
+              name: BuildAndPushDockerRegistry_1
+              identifier: BuildAndPushDockerRegistry_1
+              spec:
+                connectorRef: dockerhub
+                repo: <+input>
+                tags:
+                  - <+pipeline.identifier>-<+pipeline.sequenceId>
+  identifier: harnesssebuildtemplate
+  versionLabel: "1.0"
+  EOT
+}
+
+resource "harness_platform_pipeline" "example" {
+  identifier = "harnesssecilab"
+  org_id     = harness_platform_project.harness_se_lab.org_id
+  project_id = harness_platform_project.harness_se_lab.id
+  name       = "harness-se-ci-lab"
+  yaml = <<-EOT
+pipeline:
+  name: harness-se-ci-lab
+  identifier: harnesssecilab
+  projectIdentifier: harnessselab
+  orgIdentifier: default
+  tags: {}
+  properties:
+    ci:
+      codebase:
+        connectorRef: Github
+        repoName: <+input>
+        build: <+input>
+  stages:
+    - stage:
+        name: Build
+        identifier: Build
+        template:
+          templateRef: harnesssebuildtemplate
+          versionLabel: "1.0"
+          templateInputs:
+            type: CI
+            spec:
+              infrastructure:
+                type: KubernetesDirect
+                spec:
+                  namespace: <+input>
+              execution:
+                steps:
+                  - step:
+                      identifier: BuildAndPushDockerRegistry_1
+                      type: BuildAndPushDockerRegistry
+                      spec:
+                        repo: <+input>
+  EOT
+}

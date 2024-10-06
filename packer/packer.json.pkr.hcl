@@ -9,13 +9,14 @@ variable "version" {
 }
 
 locals {
-  image             = "linode/ubuntu18.04"
+  image             = "linode/ubuntu22.04"
   image_description = "Bastion Private Image"
   image_label       = "bastion"
   instance_label    = "bastion"
   instance_type     = "g6-standard-1"
   region            = "us-east"
   ssh_username      = "root"
+  authorized_keys   = ["ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC14w4MzeV/v1qrKLtxD7XeLIIGzrPdYj1poYxtgyjiqco5u4Lh9oiYuz2m7qGQW+ZqBdZIvmP+msGorD8fM+tWQSZuk4PxLGEDoRJ1+cEVLjanNPDEm68vgK18lyKr1lPkyM64R3TssoCy26NbOrU/pdM9txVx9o0pynypx2lFsUYrnE+LEM8kmpJjdFZvh0onHC17io5y/aZcw6q+e0xcs2J390sjtUcBJ0GB6lUmlEwB6Y2pRPMPJdDTF1gxSmZFEVl1EIlAQTHtYQmKc8D55AU8Gbe4AoWIIeh5Ei8HQfj+HxkOVX5jxcHtTpan/O61vg66FFJShZiQrZ+CbcGx"]
 }
 
 source "linode" "bastion" {
@@ -27,16 +28,12 @@ source "linode" "bastion" {
   linode_token      = var.linode_token
   region            = local.region
   ssh_username      = local.ssh_username
+  authorized_keys   = local.authorized_keys
 }
 
 build {
   sources = ["source.linode.bastion"]
-
-  provisioner "shell" {
-    inline = [
-      "sudo apt update && sudo DEBIAN_FRONTEND=noninteractive apt upgrade -y"
-    ]
-  }
+  
   provisioner "shell" {
     inline = [
       "mkdir ~/ssh-conf",
@@ -58,11 +55,10 @@ build {
 
   provisioner "shell" {
     inline = [
-      "curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -",
-      "sudo touch /etc/apt/sources.list.d/kubernetes.list",
-      "echo 'deb http://apt.kubernetes.io/ kubernetes-xenial main' | sudo tee -a /etc/apt/sources.list.d/kubernetes.list",
-      "sudo apt update",
-      "sudo apt install -y kubectl",
+      "curl -LO \"https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl\"",
+      "curl -LO \"https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl.sha256\"",
+      "echo \"$(cat kubectl.sha256) kubectl\" | sha256sum --check",
+      "sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl",
       "wget https://get.helm.sh/helm-v3.9.4-linux-amd64.tar.gz -O helm.tar.gz",
       "tar zxfv helm.tar.gz",
       "sudo mv linux-amd64/helm /usr/local/bin",
@@ -97,7 +93,7 @@ build {
       "sudo cp ~/ssh-conf/sshd_config /etc/ssh/",
       "sudo cp ~/ssh-conf/ssh_config /etc/ssh/",
       "sudo cp ~/ssh-conf/trusted-user-ca-keys.pem /etc/ssh/",
-      "sudo cp ~/ssh-conf/config ~/.ssh/config",
+      "sudo cp ~/ssh-conf/config .ssh/config",
       "rm -rf ~/ssh-conf"
     ]
   }

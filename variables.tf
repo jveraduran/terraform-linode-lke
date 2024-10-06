@@ -1,13 +1,32 @@
+variable "harness_account_id" {
+  description = "Harness Account ID. (required)"
+}
+
+variable "harness_platform_api_key" {
+  description = "Harness Platform API Key. (required)"
+}
+
+variable "harness_delegate_token" {
+  description = "Harness Delegate Token. (required)"
+}
+
+variable "harness_manager_endpoint" {
+  description = "Harness Manager Endpoint. (required)"
+  default     = "https://app.harness.io/gratis"
+}
+
 variable "token" {
   description = "Your Linode API Access Token (required)"
 }
+
 variable "nodes_count" {
   description = "Worker nodes count(required)"
-  default     = "3"
+  default     = "1"
 }
+
 variable "k8s_version" {
   description = "The Kubernetes version to use for this cluster. (required)"
-  default     = "1.23"
+  default     = "1.31"
 }
 
 variable "label" {
@@ -38,8 +57,8 @@ variable "pool" {
   }))
   default = [
     {
-      type  = "g6-standard-1"
-      count = 3
+      type  = "g6-standard-4"
+      count = 1
     }
   ]
 }

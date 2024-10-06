@@ -11,6 +11,7 @@ id_rsa.pub
 **/.terraform/*
 ./terraform/*
 .terraform
+local-directory
 credentials.json
 
 # Terraform lockfile
