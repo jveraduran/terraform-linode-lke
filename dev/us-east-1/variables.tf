@@ -1,5 +1,6 @@
 variable "harness_account_id" {
   description = "Harness Account ID. (required)"
+  default     = "UCBJyOkwRy69wQkDOgpexg"
 }
 
 variable "harness_platform_api_key" {
@@ -37,6 +38,11 @@ variable "aws_session_token" {
 variable "nodes_count" {
   description = "Worker nodes count(required)"
   default     = "1"
+}
+
+variable "image_id" {
+  description = "The image ID to use for the Linode instance (required if booted = true)"
+  type        = string
 }
 
 variable "k8s_version" {
