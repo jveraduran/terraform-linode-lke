@@ -3,7 +3,7 @@ module "lke" {
   region               = var.region
   nodes_count          = var.nodes_count
   k8s_version          = var.k8s_version
-  label                = var.label
+  label                = substr("${var.label}-${replace(timestamp(), ":", "-")}", 0, 32)
   tags                 = var.tags
   client_conn_throttle = var.client_conn_throttle
   pool                 = var.pool
@@ -19,7 +19,7 @@ resource "local_file" "kubeconfig" {
 
 module "bastion" {
   source          = "./modules/bastion"
-  image_id        = length(data.linode_images.bastion.images) > 0 ? data.linode_images.bastion.images[0].id : null
+  image_id        = length(data.linode_images.bastion.images) > 0 ? data.linode_images.bastion.images[0].id : var.image_id
   authorized_keys = ["ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDXcjdW6/fLSzQnRCUDoDEz6jasL9i3u5fP/Li1oqZF6sDKbe7hsBaLhOk4IaPbGIhXtIN2QPR1S7/3NpSQZtv8Z5FgE9CnVR/woVDUm9/mk2AfhlTvYQAeg2avRsPeVjmKN13acKrTWAbtXngHRne22TKiXAYU//S+pkA9dxlSxhEnFFsVJbYWiKTIaZpMnPfTbwBZRFzQBEOqFYN7HSaf5aqcHeLnnZbErMtDlPifcgyuzfXUp1cRo15MktkglIgRxGR9va0OcPRcjyLV3IZASRX8/qxAUf9KVpMG+jSUU3ftYRx5mflpC8QBOvo1Esx1X3QD/UsNuXzWLFUZ1zjeO/1vuLOR8kq+fRnGMa5Zzm/v0bo1iUVjP2i7gNR47JRxbrbNpOCBxTAwdJmg516a6lCiKsMn5eKO++jPJ2QCyCNShFx11QoY6a/sEVJY3SPQ0fUgLIbEDUHjkshdAG20fZa67BmEf256hpZbCClqi7Q1K5wtl9oOQOPuJKWJC8GnLSbiNDtxGTLtNt8OWqwDCOMBym0CAQtNY/0xtjSSRGwyhZjarMm2kfo7/7HkjPIWASitPdz4oTY+PlRjvu8AeDtPl1XuHVDIt62JfRbqlJRAZA5JOb4ANgxUyN51KNvZLzxCvQkOMrBTFm8cS57VN/TA5q/2Z9NDwaloFafWQQ=="]
   region          = var.region
   type            = "g6-standard-1"
