@@ -20,16 +20,6 @@ variable "token" {
   description = "Your Linode API Access Token (required)"
 }
 
-variable "aws_access_key" {
-  description = "AWS access key ID (optional)"
-  type        = string
-}
-
-variable "aws_secret_key" {
-  description = "AWS secret access key (optional)"
-  type        = string
-}
-
 variable "nodes_count" {
   description = "Worker nodes count(required)"
   default     = "1"
