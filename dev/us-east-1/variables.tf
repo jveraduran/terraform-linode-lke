@@ -30,11 +30,6 @@ variable "aws_secret_key" {
   type        = string
 }
 
-variable "aws_session_token" {
-  description = "AWS session token for temporary credentials (optional)"
-  type        = string
-}
-
 variable "nodes_count" {
   description = "Worker nodes count(required)"
   default     = "1"
