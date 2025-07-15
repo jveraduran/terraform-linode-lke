@@ -10,7 +10,7 @@ inputs = {
   aws_secret_key    = local.aws_secret_key
 
   region               = "us-east"
-  image_id             = "private/33089839"
+  image_id             = "private/33096300"
   type                 = "g6-standard-1"
   label                = "linode_cluster"
   k8s_version          = "1.32"
